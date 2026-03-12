@@ -18,8 +18,8 @@ services:
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "60"
 
-  # React + Vite + Tailwind frontend as static site
-  - type: static_site
+  # React + Vite + Tailwind frontend as static site via Blueprint
+  - type: web
     name: ppf-rejection-frontend
     env: static
     rootDir: frontend
