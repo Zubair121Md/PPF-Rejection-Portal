@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+SQLAlchemy>=2.0
+asyncpg
+alembic
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+pydantic[email]
+pandas
+openpyxl

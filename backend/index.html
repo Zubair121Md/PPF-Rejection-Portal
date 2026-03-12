@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PPF Rejection Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+      :root {
+        --bg-sidebar-start: #321b8f;
+        --bg-sidebar-end: #a036ff;
+        --bg-main: #f3f4f6;
+        --card-bg: #ffffff;
+        --border-subtle: #e5e7eb;
+        --text-main: #111827;
+        --text-muted: #6b7280;
+        --primary: #7c3aed;
+        --primary-soft: #ede9fe;
+        --b2b: #0ea5e9;
+        --b2c: #f97316;
+        --danger: #ef4444;
+        --success: #10b981;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg-main);
+        color: var(--text-main);
+      }
+
+      .layout {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 260px;
+        background: linear-gradient(to bottom, var(--bg-sidebar-start), var(--bg-sidebar-end));
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        padding: 20px 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        margin-bottom: 16px;
+      }
+
+      .brand-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        background: rgba(237, 233, 254, 0.15);
+        border: 1px solid rgba(221, 214, 254, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 12px;
+      }
+
+      .brand-text-title {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .brand-text-subtitle {
+        font-size: 11px;
+        color: rgba(249, 250, 251, 0.8);
+      }
+
+      .nav-section-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(249, 250, 251, 0.75);
+        margin: 16px 8px 6px;
+      }
+
+      .nav-list {
+        list-style: none;
+        margin: 0;
+        padding: 0 4px;
+      }
+
+      .nav-item {
+        margin-bottom: 4px;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        color: rgba(249, 250, 251, 0.85);
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+      }
+
+      .nav-link i {
+        font-size: 13px;
+        width: 16px;
+        text-align: center;
+      }
+
+      .nav-link.active,
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.14);
+        color: #ffffff;
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        padding: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        font-size: 11px;
+        color: rgba(249, 250, 251, 0.8);
+      }
+
+      .sidebar-user-name {
+        font-weight: 500;
+      }
+
+      .sidebar-user-role {
+        text-transform: capitalize;
+      }
+
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        height: 64px;
+        background: #ffffff;
+        border-bottom: 1px solid var(--border-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+      }
+
+      .topbar-title {
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+      }
+
+      .topbar-subtitle {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .topbar-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        border: 1px solid rgba(167, 139, 250, 0.6);
+        font-size: 11px;
+        padding: 6px 10px;
+      }
+
+      .topbar-badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--success);
+      }
+
+      .content {
+        flex: 1;
+        padding: 18px 24px 24px;
+        overflow-y: auto;
+      }
+
+      .content-inner {
+        max-width: 1120px;
+        margin: 0 auto;
+      }
+
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .page-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 0;
+        color: var(--text-main);
+      }
+
+      .page-subtitle {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+
+      .pill-tabs {
+        display: inline-flex;
+        align-items: center;
+        background: #e5e7eb;
+        border-radius: 999px;
+        padding: 2px;
+        font-size: 12px;
+      }
+
+      .pill-tab {
+        border-radius: 999px;
+        padding: 5px 14px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: #4b5563;
+      }
+
+      .pill-tab.active {
+        background: #ffffff;
+        color: #111827;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      }
+
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .kpi-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid var(--border-subtle);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+        padding: 10px 12px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .kpi-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px 16px 0 0;
+        border-top: 3px solid transparent;
+      }
+
+      .kpi-card.kpi-total::before {
+        border-top-color: #fbbf24;
+      }
+
+      .kpi-card.kpi-b2b::before {
+        border-top-color: #38bdf8;
+      }
+
+      .kpi-card.kpi-b2c::before {
+        border-top-color: #fb923c;
+      }
+
+      .kpi-card.kpi-pending::before {
+        border-top-color: #34d399;
+      }
+
+      .kpi-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+      }
+
+      .kpi-value {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      .kpi-footnote {
+        margin-top: 2px;
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      .charts-row {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: 2fr 1fr;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid var(--border-subtle);
+        padding: 14px 14px 12px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .card-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      .card-subtitle {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      .card-filter {
+        border-radius: 999px;
+        border: 1px solid var(--border-subtle);
+        background: #f9fafb;
+        padding: 4px 10px;
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      .card-placeholder {
+        height: 170px;
+        border-radius: 12px;
+        border: 1px dashed var(--border-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: var(--text-muted);
+        background: #f9fafb;
+      }
+
+      .charts-row canvas {
+        width: 100% !important;
+        height: 170px !important;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 960px) {
+        .layout {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          flex-direction: row;
+          overflow-x: auto;
+        }
+
+        .sidebar-footer {
+          display: none;
+        }
+
+        .main {
+          min-height: calc(100vh - 70px);
+        }
+
+        .kpi-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .charts-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-icon">PPF</div>
+          <div>
+            <div class="brand-text-title">Rejection Control</div>
+            <div class="brand-text-subtitle">Daily loss governance</div>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-label">Navigation</div>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a class="nav-link active" data-tab="dashboard">
+                <i class="fa-solid fa-chart-line"></i>
+                Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-tab="create-ticket">
+                <i class="fa-solid fa-ticket"></i>
+                Create Ticket
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-tab="tickets">
+                <i class="fa-regular fa-rectangle-list"></i>
+                Tickets
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-tab="approvals">
+                <i class="fa-solid fa-check-circle"></i>
+                Approvals
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-tab="reports">
+                <i class="fa-solid fa-file-export"></i>
+                Reports
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-tab="admin">
+                <i class="fa-solid fa-gear"></i>
+                Admin Panel
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-user-name" id="sidebar-user-name">
+            Dev Admin
+          </div>
+          <div class="sidebar-user-role" id="sidebar-user-role">admin</div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <div class="topbar-title">PPF Rejection Management</div>
+            <div class="topbar-subtitle">
+              Transparent approval workflow for B2B &amp; B2C product rejections
+            </div>
+          </div>
+          <div class="topbar-badge">
+            <span class="topbar-badge-dot"></span>
+            Rejection feed live
+          </div>
+        </header>
+
+        <section class="content">
+          <div class="content-inner">
+            <!-- Dashboard tab -->
+            <section id="tab-dashboard">
+              <div class="page-header">
+                <div>
+                  <h1 class="page-title">Dashboard</h1>
+                  <p class="page-subtitle">
+                    Overview &amp; analytics for daily rejection impact.
+                  </p>
+                </div>
+                <div class="pill-tabs">
+                  <button class="pill-tab active">Dashboard</button>
+                  <button class="pill-tab">Overview &amp; Analytics</button>
+                </div>
+              </div>
+
+              <div class="kpi-grid">
+                <article class="kpi-card kpi-total">
+                  <div class="kpi-label">Total tickets</div>
+                  <div class="kpi-value" id="kpi-total-tickets">–</div>
+                  <div class="kpi-footnote" id="kpi-total-footnote">
+                    0 raised today
+                  </div>
+                </article>
+                <article class="kpi-card kpi-b2b">
+                  <div class="kpi-label">B2B rejection value</div>
+                  <div class="kpi-value" id="kpi-b2b-value">–</div>
+                  <div class="kpi-footnote">Across all B2B customers</div>
+                </article>
+                <article class="kpi-card kpi-b2c">
+                  <div class="kpi-label">B2C rejection value</div>
+                  <div class="kpi-value" id="kpi-b2c-value">–</div>
+                  <div class="kpi-footnote">Across all B2C orders</div>
+                </article>
+                <article class="kpi-card kpi-pending">
+                  <div class="kpi-label">Pending approvals</div>
+                  <div class="kpi-value" id="kpi-pending-count">–</div>
+                  <div class="kpi-footnote">
+                    Tickets waiting for manager / admin
+                  </div>
+                </article>
+              </div>
+
+              <div class="charts-row">
+                <section class="card">
+                  <div class="card-header">
+                    <div>
+                      <div class="card-title">Rejection cost vs quantity</div>
+                      <div class="card-subtitle">
+                        Snapshot for the current delivery window.
+                      </div>
+                    </div>
+                    <select class="card-filter">
+                      <option>This week</option>
+                      <option>This month</option>
+                    </select>
+                  </div>
+                  <canvas id="chart-cost-vs-qty"></canvas>
+                </section>
+
+                <section class="card">
+                  <div class="card-header">
+                    <div>
+                      <div class="card-title">Channel distribution</div>
+                      <div class="card-subtitle">
+                        Share of total rejection value.
+                      </div>
+                    </div>
+                  </div>
+                  <canvas id="chart-channel-split"></canvas>
+                </section>
+              </div>
+            </section>
+
+            <!-- Placeholder content for other tabs -->
+            <section id="tab-create-ticket" class="hidden">
+              <div class="page-header">
+                <div>
+                  <h1 class="page-title">Create Ticket</h1>
+                  <p class="page-subtitle">
+                    Log a new rejection ticket for B2B or B2C deliveries.
+                  </p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <div>
+                    <div class="card-title">Rejection ticket form</div>
+                    <div class="card-subtitle">
+                      Product, quantity, cost, reason, delivery batch &amp; photo
+                      proof.
+                    </div>
+                  </div>
+                </div>
+                <div class="card-placeholder">
+                  Use the React form or API client for now – HTML form wiring
+                  can be added next.
+                </div>
+              </div>
+            </section>
+
+            <section id="tab-tickets" class="hidden">
+              <div class="page-header">
+                <div>
+                  <h1 class="page-title">Tickets</h1>
+                  <p class="page-subtitle">
+                    Channel-filtered register of all rejection tickets.
+                  </p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <div>
+                    <div class="card-title">Tickets list</div>
+                    <div class="card-subtitle">
+                      This section can mirror the React tickets table.
+                    </div>
+                  </div>
+                </div>
+                <div class="card-placeholder">
+                  Coming next: full HTML table wired to /tickets.
+                </div>
+              </div>
+            </section>
+
+            <section id="tab-approvals" class="hidden">
+              <div class="page-header">
+                <div>
+                  <h1 class="page-title">Approvals</h1>
+                  <p class="page-subtitle">
+                    Manager / Admin view of all pending tickets.
+                  </p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <div>
+                    <div class="card-title">Pending approvals</div>
+                    <div class="card-subtitle">
+                      Approve / reject directly from this panel.
+                    </div>
+                  </div>
+                </div>
+                <div class="card-placeholder">
+                  Coming next: HTML approvals table wired to /approvals/pending.
+                </div>
+              </div>
+            </section>
+
+            <section id="tab-reports" class="hidden">
+              <div class="page-header">
+                <div>
+                  <h1 class="page-title">Reports</h1>
+                  <p class="page-subtitle">
+                    Export CSV / Excel and review rejection trends.
+                  </p>
+                </div>
+              </div>
+              <div class="card-placeholder">
+                This tab will host charts and export buttons similar to the ERP
+                screenshot.
+              </div>
+            </section>
+
+            <section id="tab-admin" class="hidden">
+              <div class="page-header">
+                <div>
+                  <h1 class="page-title">Admin Panel</h1>
+                  <p class="page-subtitle">
+                    Configure roles, thresholds and notification channels.
+                  </p>
+                </div>
+              </div>
+              <div class="card-placeholder">
+                Admin tools will be added here later.
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+  </body>
+</html>
+
