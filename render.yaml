@@ -1,0 +1,32 @@
+services:
+  # FastAPI backend on Render
+  - type: web
+    name: ppf-rejection-backend
+    env: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      # Set these in the Render dashboard (do NOT commit secrets)
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+
+  # React + Vite + Tailwind frontend as static site
+  - type: static
+    name: ppf-rejection-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      # After the backend is deployed, update this to the backend URL
+      # e.g. https://ppf-rejection-backend.onrender.com
+      - key: VITE_API_BASE_URL
+        value: ""
+
