@@ -41,13 +41,14 @@ services:
       npm install
       npm run build
 
-    publishDir: dist
+    # Path to built static files, relative to repo root (Blueprint: staticPublishPath)
+    staticPublishPath: ./frontend/dist
 
     envVars:
-      # Point frontend API to backend Render service URL
+      # Point frontend API to backend Render service URL (Blueprint: use envVarKey)
       - key: VITE_API_BASE_URL
         fromService:
           type: web
           name: ppf-backend
-          envVarName: RENDER_EXTERNAL_URL
+          envVarKey: RENDER_EXTERNAL_URL
 
