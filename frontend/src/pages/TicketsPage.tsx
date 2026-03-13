@@ -112,16 +112,6 @@ export default function TicketsPage() {
     }
   }, [statusFilter]);
 
-  const badgeClasses = (status: TicketStatus) => {
-    if (status === 'approved') {
-      return 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40';
-    }
-    if (status === 'rejected') {
-      return 'bg-red-500/10 text-red-300 border-red-500/40';
-    }
-    return 'bg-amber-500/10 text-amber-300 border-amber-500/40';
-  };
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './index.css';
 import { AuthProvider, useAuth } from './auth/AuthContext';
@@ -10,7 +11,7 @@ import ReportsPage from './pages/ReportsPage';
 import AdminPanelPage from './pages/AdminPanelPage';
 import AppLayout from './layout/AppLayout';
 
-function ProtectedRoute({ children }: { children: JSX.Element }) {
+function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   if (!user) {
     return <Navigate to="/login" replace />;
