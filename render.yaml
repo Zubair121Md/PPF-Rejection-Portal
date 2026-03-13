@@ -1,7 +1,5 @@
 services:
-  # -----------------------------
   # FastAPI Backend
-  # -----------------------------
   - type: web
     name: ppf-backend
     env: python
@@ -16,7 +14,6 @@ services:
       uvicorn app.main:app --host 0.0.0.0 --port $PORT
 
     envVars:
-      # Auth settings
       - key: SECRET_KEY
         generateValue: true
 
@@ -26,13 +23,10 @@ services:
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "60"
 
-      # PostgreSQL database
       - key: DATABASE_URL
-        value: postgresql+asyncpg://ppf_rejection_db_user:yaaPJ10LWPeOYHhPYRghsIEYVgyKGZhI@dpg-d6plfan5gffc73dme5qg-a/ppf_rejection_db
+        value: postgresql+asyncpg://ppf_rejection_db_user:yaaPJ10LWPeOYHhPYRghsIEYVgyKGZhI@dpg-d6plfan5gffc73dme5qg-a.oregon-postgres.render.com:5432/ppf_rejection_db
 
-  # -----------------------------
   # React + Vite Frontend
-  # -----------------------------
   - type: web
     name: ppf-frontend
     runtime: static
