@@ -10,3 +10,4 @@ pydantic[email]
 pydantic-settings
 pandas
 openpyxl
+psycopg2-binary
