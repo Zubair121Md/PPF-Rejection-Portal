@@ -10,4 +10,8 @@ pydantic[email]
 pydantic-settings
 pandas
 openpyxl
+fastapi
+uvicorn
+sqlalchemy
+asyncpg
 psycopg2-binary
