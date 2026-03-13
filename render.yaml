@@ -23,7 +23,7 @@ services:
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "60"
 
-      - key: DATABASE_URL
+      - key: database_url
         value: postgresql+asyncpg://ppf_rejection_db_user:yaaPJ10LWPeOYHhPYRghsIEYVgyKGZhI@dpg-d6plfan5gffc73dme5qg-a.oregon-postgres.render.com:5432/ppf_rejection_db
 
   # React + Vite Frontend
